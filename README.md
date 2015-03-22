@@ -1,3 +1,31 @@
+### Homework 3 submission
+
+Following are the details of the homework 3 submission for *Option 2*
+
+1) Get and Set
+
+```
+app.get('/', function(req, res) {
+  res.send('hello world: Port 3000')
+})
+
+app.get('/set',function(req,res){
+client.set("msg_key", "this message will destruct in 10 sec");
+client.expire("msg_key",10);
+res.send('Key was added succsessfully');
+})
+
+app.get('/get',function(req,res){
+
+client.get("msg_key",function(err,value){
+res.send(value)
+})
+
+})
+```
+
+
+
 Cache, Proxies, Queues
 =========================
 
