@@ -95,11 +95,11 @@ The proxy code can be found in the file name proxy.js
 
 All the http requests are made to the proxy server on localhost:3002
 However the proxy server does not contain any logic to serve these request.
-The proxy server uses redis to keep a track the server that last served a request.
+The proxy server uses redis to keep a track of the server that last served a request.
 On receiving a request the proxy server will toggle the servers and redirect the request to the chosen server.
-Thus it will unifromly distribute the loads across the two servers.
+Thus it will uniformly distribute the load across the two servers.
 
-Both the application servers and the proxy server refer to the same redis server and act as redis client.
+Both the application servers and the proxy server refer to the same redis server and act as independent redis clients.
 This makes it easy to use the cached data for load balancing.
 
 Below is the code snippet of the uniform load distributor:
