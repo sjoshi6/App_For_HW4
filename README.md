@@ -69,10 +69,6 @@ app.get('/meow', function(req, res) {
 
 		})
 
-		// client.lpop('images',function(err,value){
-		// 			res.send(value)
-		// })
-
 
 })
 
