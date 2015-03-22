@@ -2,7 +2,7 @@
 
 Following are the details of the homework 3 submission for *Option 2*
 
-1) Get and Set
+1) Completed get and set requests
 
 ```
 app.get('/', function(req, res) {
@@ -22,6 +22,60 @@ res.send(value)
 })
 
 })
+```
+
+2) Completed recents
+
+```
+app.get('/recent',function(req,res){
+client.lrange("visits",0,5,function(err,value){
+res.send(value);
+})
+})
+```
+
+3) Completed upload and meow
+
+```
+app.post('/upload',[ multer({ dest: './uploads/'}), function(req, res){
+   console.log(req.body) // form fields
+   console.log(req.files) // form files
+
+   if( req.files.image )
+   {
+	   fs.readFile( req.files.image.path, function (err, data) {
+	  		if (err) throw err;
+	  		var img = new Buffer(data).toString('base64');
+	  		console.log(img);
+				client.lpush('images',img)
+		});
+	}
+
+    res.status(204).end()
+ }]);
+
+app.get('/meow', function(req, res) {
+
+		client.lpop('images',function(err,imagedata){
+
+			if (err) res.send('')
+
+			res.writeHead(200, {'content-type':'text/html'});
+			//items.forEach(function (imagedata)
+			//{
+				res.write("<h1>\n<img src='data:my_pic.jpg;base64,"+imagedata+"'/>");
+			//});
+			res.end();
+
+		})
+
+		// client.lpop('images',function(err,value){
+		// 			res.send(value)
+		// })
+
+
+})
+
 ```
 
 
