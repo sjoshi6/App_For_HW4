@@ -73,6 +73,59 @@ app.get('/meow', function(req, res) {
 })
 ```
 
+4) Started an additional server instance on localhost port 3001
+
+In addition to the server on localhost port 3000 I have started an additional server that performs the same operations on localhost port 3001. The additional server is present in the file named server2.js
+
+```
+var server = app.listen(3001, function () {
+
+	  var host = server.address().address
+	  var port = server.address().port
+
+   	console.log('Example app listening at http://%s:%s', host, port)
+})
+```
+
+5) Implementing the Proxy
+
+The proxy is essentially a third server that operates on localhost port 3002 and it acts as a load balancer between the two app servers on port 3000 and 3001.
+
+The proxy code can be found in the file name proxy.js
+
+All the http requests are made to the proxy server on localhost:3002
+However the proxy server does not contain any logic to serve these request.
+The proxy server uses redis to keep a track the server that last served a request.
+On receiving a request the proxy server will toggle the servers and redirect the request to the chosen server.
+Thus it will unifromly distribute the loads across the two servers.
+
+Both the application servers and the proxy server refer to the same redis server and act as redis client.
+This makes it easy to use the cached data for load balancing.
+
+Below is the code snippet of the uniform load distributor:
+```
+  client.get('lastvisited',function(err,value){
+				if(value == '3000')
+				{
+					  visit_server='3001'
+						client.set('lastvisited','3001')
+				}
+				else
+				{
+					visit_server='3000'
+					client.set('lastvisited','3000')
+				}
+
+				var txt = 'served_by_'+visit_server
+				client.incr(txt) // increment when visited
+
+				request('http://localhost:'+visit_server+'/', function (error, response, body) {
+					if (!error && response.statusCode == 200) {
+						res.send(body) // Show the HTML for the Google homepage.
+					}
+				})
+			})
+```
 
 
 Cache, Proxies, Queues
