@@ -189,3 +189,29 @@ app.get('/meow',function(req,res){
 	})
 
 })
+
+
+app.get('/upload',function(req,res){
+
+	client.get('lastvisited',function(err,value){
+		if(value == '3000')
+		{
+				visit_server='3001'
+				client.set('lastvisited','3001')
+		}
+		else
+		{
+			visit_server='3000'
+			client.set('lastvisited','3000')
+		}
+
+		var txt = 'served_by_'+visit_server
+		client.incr(txt) // increment when visited
+
+		request('http://localhost:'+visit_server+'/upload', function (error, response, body) {
+			if (!error && response.statusCode == 200) {
+				res.send('') // Show the HTML for the Google homepage.
+			}
+		})
+	})
+})
