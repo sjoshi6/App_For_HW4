@@ -191,7 +191,7 @@ app.get('/meow',function(req,res){
 })
 
 
-app.get('/upload',function(req,res){
+app.post('/upload',function(req,res){
 
 	client.get('lastvisited',function(err,value){
 		if(value == '3000')
