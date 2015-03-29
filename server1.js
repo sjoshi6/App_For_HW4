@@ -4,8 +4,12 @@ var express = require('express')
 var fs      = require('fs')
 var app = express()
 // REDIS
-var client = redis.createClient(6379, '127.0.0.1', {})
 
+var blue_client = redis.createClient(7777, '127.0.0.1', {})
+var green_client = redis.createClient(8888, '127.0.0.1', {})
+////
+var curr_client = 'blue'
+var client = blue_client
 ///////////// WEB ROUTES
 
 // Add hook to make it easier to get all visited URLS.
@@ -16,6 +20,26 @@ app.use(function(req, res, next)
 	// ... INSERT HERE.
 
 	next(); // Passing the request to the next handler in the stack.
+});
+
+app.get('/switch',function(req,res){
+
+		if(curr_client == 'blue')
+		{
+			console.log('Current: Redis Blue')
+			client = green_client  // switch client to green redis
+			curr_client = 'green'
+			console.log('Toggled to: Redis Green')
+		}
+		else
+		{
+			console.log('Current: Redis Green')
+			client = blue_client  // switch client to blue redis
+			curr_client = 'blue'
+			console.log('Toggled to: Redis Blue')
+		}
+
+		res.send('')
 });
 
 
