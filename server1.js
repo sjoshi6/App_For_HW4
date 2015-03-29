@@ -47,13 +47,45 @@ app.get('/switch',function(req,res){
 });
 
 app.get('/switch_to_blue_redis',function(req,res){
+
+		var message=''
+
+		if(client == green_client)
+		{
+			//if the original server was pointing to other redis then transfer data
+			green_client.lrange("images",0,-1,function(err,value){
+
+							value.forEach(function(data){
+									blue_client.lpush("images",data);
+							});
+			});
+
+			message = message+'Data Migrated from Redis Green to Redis Blue :: '
+		}
+
 		client = blue_client
-		res.send('Switched to Blue Redis');
+		res.send(message+'Switched to Blue Redis');
 });
 
 app.get('/switch_to_green_redis',function(req,res){
+
+		var message=''
+
+		if(client == blue_client)
+		{
+			//if the original server was pointing to other redis then transfer data
+			blue_client.lrange("images",0,-1,function(err,value){
+
+							value.forEach(function(data){
+								green_client.lpush("images",data);
+							});
+			});
+
+			message = message+'Data Migrated from Redis Blue to Green :: '
+		}
+
 		client = green_client
-		res.send('Switched to Green Redis');
+		res.send(message+'Switched to Green Redis');
 });
 
 app.post('/upload',[ multer({ dest: './uploads/'}), function(req, res){
@@ -109,7 +141,9 @@ var server = app.listen(PORT, function () {
 
 
 app.get('/', function(req, res) {
+
   res.send('hello world: Port '+PORT)
+
 })
 
 app.get('/set',function(req,res){
