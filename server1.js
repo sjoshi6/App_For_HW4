@@ -3,9 +3,11 @@ var multer  = require('multer')
 var express = require('express')
 var fs      = require('fs')
 var app = express()
+
+//Setting Ports via Command Line
+var args = process.argv.slice(2);
+var PORT = args[0];
 // REDIS
-
-
 var blue_client = redis.createClient(7777, '127.0.0.1', {})
 var green_client = redis.createClient(8888, '127.0.0.1', {})
 ////
@@ -41,6 +43,7 @@ app.get('/switch',function(req,res){
 		}
 
 		res.send('')
+
 });
 
 
@@ -84,7 +87,7 @@ app.get('/meow', function(req, res) {
 })
 
 // HTTP SERVER
-var server = app.listen(3000, function () {
+var server = app.listen(PORT, function () {
 
 	  var host = server.address().address
 	  var port = server.address().port
@@ -97,7 +100,7 @@ var server = app.listen(3000, function () {
 
 
 app.get('/', function(req, res) {
-  res.send('hello world: Port 3000')
+  res.send('hello world: Port '+PORT)
 })
 
 app.get('/set',function(req,res){
