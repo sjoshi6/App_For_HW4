@@ -5,6 +5,7 @@ var fs      = require('fs')
 var app = express()
 // REDIS
 
+
 var blue_client = redis.createClient(7777, '127.0.0.1', {})
 var green_client = redis.createClient(8888, '127.0.0.1', {})
 ////
