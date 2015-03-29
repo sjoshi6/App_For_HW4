@@ -46,6 +46,15 @@ app.get('/switch',function(req,res){
 
 });
 
+app.get('/switch_to_blue_redis',function(req,res){
+		client = blue_client
+		res.send('Switched to Blue Redis');
+});
+
+app.get('/switch_to_green_redis',function(req,res){
+		client = green_client
+		res.send('Switched to Green Redis');
+});
 
 app.post('/upload',[ multer({ dest: './uploads/'}), function(req, res){
    console.log(req.body) // form fields
